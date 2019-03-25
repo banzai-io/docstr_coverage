@@ -111,15 +111,8 @@ class Command(BaseCommand):
             print("-" * 81)
             print("\n DOCSTR-COVERAGE: \n")
 
-        DOCSTR_CODE_EXCLUDES = {
-            'MODULES': ("views.py", "forms.py", "factories.py", "models.py", "admin.py"),  # list of modules to skip module-level docstring
-            'NAMES': (  # tuple with name regex to skip docstrings
-                '[A-Z].*(Form|Admin|TestCase|Model)$',  # skip all class names that end on Form/Admin/TestCase/Model
-                '[A-Z].*View[.]get_success_url',  # skip <get_success_url> for all Views
-                '[A-Z].*Manager[.]get_queryset',  # skip <get_queryset> for all Managers
-                'Meta',  # skip all <class Meta> definitions
-            ),
-        }
+        code_excludes = getattr(settings, 'DOCSTR_CODE_EXCLUDES', None)
+
         get_docstring_coverage(
             filenames,
             skip_magic=options.get('skip_magic'),
@@ -127,7 +120,7 @@ class Command(BaseCommand):
             skip_init=options.get('skip_init'),
             skip_class_def=options.get('skip_class_def'),
             verbose=options.get('verbose'),
-            code_excludes=DOCSTR_CODE_EXCLUDES,
+            code_excludes=code_excludes,
         )
 
         if verbose > 0:

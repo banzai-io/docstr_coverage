@@ -139,5 +139,5 @@ Installation
 ------------
 
 ```
-pip install -e git+https://github.com/banzai-io/docstr_coverage.git@5846a6022f66c15ed4142973e71eb2efb5185141#egg=django_docstr_coverage
+pip install -e git+https://github.com/banzai-io/docstr_coverage.git#egg=django_docstr_coverage
 ```

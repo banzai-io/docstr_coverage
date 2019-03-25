@@ -63,6 +63,7 @@ def get_docstring_coverage(
     skip_init=False,
     skip_class_def=False,
     verbose=0,
+    code_excludes=None
 ):
     """Checks contents of `filenames` for missing docstrings, and produces a report detailing docstring status
 
@@ -107,6 +108,13 @@ def get_docstring_coverage(
         ... }
     """
     verbose = int(verbose)
+    skip_module_docs = None
+    if code_excludes:
+        skip_module_docs = code_excludes.get('MODULES', [])
+        skip_names = code_excludes.get('NAMES')
+        if skip_names:
+            skip_names = '|'.join(skip_names)
+            skip_name_pat = re.compile(skip_names)
 
     # TODO: Switch to Python's `logging` module, and remove below nested `log` function definition
     def log(text, level=1, append=False):
@@ -128,7 +136,7 @@ def get_docstring_coverage(
                 print(text)
 
     # TODO: Move :func:`print_docstring` to be a normal function outside of :func:`get_docstring_coverage`
-    def print_docstring(base, node):
+    def print_docstring(base, node, module_name):
         """Log the existence of a docstring for `node`, and accumulate stats regarding expected and encountered docstrings for
         `node` and its children (if any)
 
@@ -155,8 +163,11 @@ def get_docstring_coverage(
 
         #################### Check Current Node ####################
         if not has_doc:
-            # TODO: Add option to skip class definition docstrings (though one of class or magic methods should used)
-            if skip_init and name == "__init__":
+            # if name.endswith('Meta'):
+            #     import ipdb; ipdb.set_trace()
+            if code_excludes and skip_names and skip_name_pat.match(name) or skip_name_pat.match(f'{base}{name}'):
+                docs_needed -= 1
+            elif skip_init and name == "__init__":
                 docs_needed -= 1
             elif (
                 skip_magic and name.startswith("__") and name.endswith("__") and name != "__init__"
@@ -173,7 +184,7 @@ def get_docstring_coverage(
         #################### Check Child Nodes ####################
         for _symbol in child_nodes:
             _temp_docs_needed, _temp_docs_covered, temp_missing_list = print_docstring(
-                "%s." % name, _symbol
+                "%s." % name, _symbol, module_name
             )
             docs_needed += _temp_docs_needed
             docs_covered += _temp_docs_covered
@@ -205,8 +216,9 @@ def get_docstring_coverage(
         #################### Process Results ####################
         # _tree contains [<module docstring>, <is_empty: bool>, <symbols: classes and funcs>]
         if (not _tree[0]) and (not _tree[1]) and (not skip_file_docstring):
-            log(" - No module docstring", 3)
-            file_docs_covered -= 1
+            if skip_module_docs and os.path.basename(filename) not in skip_module_docs:
+                log(" - No module docstring", 3)
+                file_docs_covered -= 1
         elif _tree[1]:
             log(" - File is empty", 3)
             file_docs_needed = 0
@@ -215,7 +227,7 @@ def get_docstring_coverage(
 
         # Traverse through functions and classes
         for symbol in _tree[-1]:
-            temp_docs_needed, temp_docs_covered, missing_list = print_docstring("", symbol)
+            temp_docs_needed, temp_docs_covered, missing_list = print_docstring("", symbol, filename)
             file_docs_needed += temp_docs_needed
             file_docs_covered += temp_docs_covered
             file_missing_list += missing_list

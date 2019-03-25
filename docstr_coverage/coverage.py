@@ -165,7 +165,7 @@ def get_docstring_coverage(
         if not has_doc:
             # if name.endswith('Meta'):
             #     import ipdb; ipdb.set_trace()
-            if code_excludes and skip_names and skip_name_pat.match(name) or skip_name_pat.match(f'{base}{name}'):
+            if code_excludes and skip_names and (skip_name_pat.match(name) or skip_name_pat.match(f'{base}{name}')):
                 docs_needed -= 1
             elif skip_init and name == "__init__":
                 docs_needed -= 1

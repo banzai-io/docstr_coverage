@@ -1,21 +1,18 @@
 Docstr-Coverage
 ===============
 
-If the health of your documentation is in dire straits, `docstr-coverage` will see you now.
+If the health of your documentation is in dire straits, `django-docstr-coverage` will see you now.
 
-`docstr-coverage` is a simple tool that lets you measure your Python source code's
-[docstring](http://www.python.org/dev/peps/pep-0257/#what-is-a-docstring) coverage. It can show you which of your functions,
-classes, methods, and modules don't have docstrings. It also provide statistics about overall docstring coverage for individual
-files, and for your entire project.
+`django-docstr-coverage` is a simple tool that lets you measure your Python source code's
+[docstring](http://www.python.org/dev/peps/pep-0257/#what-is-a-docstring) coverage. It can show you which of your functions, classes, methods, and modules don't have docstrings. It also provide statistics about overall docstring coverage for individual files, and for your entire project.
+
 It's based on docstr-coverage:
 
 * **Source:** https://github.com/HunterMcGushion/docstr_coverage
 * **Documentation:** [https://docstr-coverage.readthedocs.io](https://docstr-coverage.readthedocs.io/en/latest/api_essentials.html)
 
 
-Current version applies support for Django project (requires Django >= 1.11):
-
-##### Django manage command to measure the coverage against full project:
+Current version applies support for Django project (requires Django >= 1.11), add `docstr-coverage` to your `settings.INSTALLED_APPS` to use Django manage command:
 
 Example:
 -------
@@ -50,10 +47,10 @@ How Do I Use It?
 
 #### The command takes all options supported by base version, but <path to dir or module> is not required,
 the command will collect all registered django apps (according to `settings.INSTALLED_APPS`). Extra settings could be applied using:
-* settings.DOCSTR_EXTRA_DIRS (list): list of extra dirs (not included to `settings.INSTALLED_APPS`)
+* `settings.DOCSTR_EXTRA_DIRS` (list): list of extra dirs (not included to `settings.INSTALLED_APPS`)
                                      to include them to the docstr-coverage measure;
-* settings.DOCSTR_EXCLUDE (str): regex identifying filepaths to exclude used as default `exclude` parameter;
-* settings.DOCSTR_CODE_EXCLUDES (dic): dict with extra excludes directly for code, examples:
+* `settings.DOCSTR_EXCLUDE` (str): regex identifying filepaths to exclude used as default `exclude` parameter;
+* `settings.DOCSTR_CODE_EXCLUDES` (dic): dict with extra excludes directly for code, examples:
 
 ```python
 DOCSTR_CODE_EXCLUDES = {
@@ -86,22 +83,22 @@ Usage:
 
 Measure docstr coverage for all apps:
 ```
->>> banzai-platform-djangeo$ python manage.py docstr_coverage
+>>> banzai-platform-django$ python manage.py docstr_coverage
 ```
 
 Measure docstr coverage for `accounts` module:
 ```
->>> banzai-platform-djangeo$ python manage.py docstr_coverage accounts
+>>> banzai-platform-django$ python manage.py docstr_coverage accounts
 ```
 
 Measure docstr coverage for all apps with verbosity lvl 1:
 ```
->>> banzai-platform-djangeo$ python manage.py docstr_coverage --verbose=1
+>>> banzai-platform-django$ python manage.py docstr_coverage --verbose=1
 ```
 
 Measure docstr coverage for `accounts` module, skip skipfiledoc with verbosity lvl 1:
 ```
->>> banzai-platform-djangeo$ python manage.py docstr_coverage -f --verbose=1
+>>> banzai-platform-django$ python manage.py docstr_coverage -f --verbose=1
 ```
 
 #### Package in Your Project
@@ -112,11 +109,13 @@ As for base version. you can also use `docstr-coverage` as a part of your projec
 from django.conf import settings
 from docstr_coverage import get_docstring_coverage
 
+#  Apply code excludes from setting:
 my_coverage = get_docstring_coverage(
     ['some_dir/file_0.py', 'some_dir/file_1.py'],
     code_excludes=settings.DOCSTR_CODE_EXCLUDES)
 
 
+# Apply custom code excludes:
 code_excludes = {
     'MODULES': ("views.py", "forms.py", "factories.py", "models.py", "admin.py")
 }

@@ -14,7 +14,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         """ Run docstr-coverage script against all the project or according to given options
-        P.S. the options are duplicated from docstr-coverage package v1.0.3
+        P.S. the options are duplicated from docstr-coverage package v1.0.3, except skipmagic is set as True by default
         """
         parser.add_argument(
             "-e",
@@ -37,7 +37,7 @@ class Command(BaseCommand):
             "--skipmagic",
             action="store_true",
             dest="skip_magic",
-            default=False,
+            default=True,
             help='Ignore docstrings of magic methods (except "__init__")',
         )
         parser.add_argument(

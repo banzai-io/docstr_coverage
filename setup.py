@@ -26,7 +26,7 @@ setup(
     author="Fibio, Hunter McGushion",
     author_email="hunter@mcgushion.com",
     license="MIT",
-    packages=['docstr_coverage', 'management'],
+    packages=['docstr_coverage'],
     python_requires=">=3.4",
     install_requires=["Django>=1.11"],
     include_package_data=True,
